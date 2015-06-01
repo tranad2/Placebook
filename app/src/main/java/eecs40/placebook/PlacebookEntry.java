@@ -30,6 +30,10 @@ public class PlacebookEntry implements Parcelable {
         return 0;
     }
 
+    public void setPhotoPath(String path){
+        photoPath = path;
+    }
+
     public static final Parcelable.Creator<PlacebookEntry> CREATOR = new Parcelable.Creator<PlacebookEntry>() {
         @Override
         public PlacebookEntry createFromParcel(Parcel source) {
