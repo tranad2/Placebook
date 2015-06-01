@@ -1,42 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp"
-    android:columnCount="2"
-    android:rowCount="1"
-    android:id="@+id/row_grid_low">
-    <ImageView
-        android:id="@+id/row_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="40dp"
-        android:minHeight="40dp"/>
-    <GridLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:columnCount="1"
-        android:rowCount="2">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left">
         <TextView
-            android:id="@+id/row_txtPlace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="10dp"
-            android:textColor="@android:color/black"
-            android:textSize="16dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="PLACE"
+            android:id="@+id/textView_place"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:textColor="#ff000000"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:typeface="normal"
             android:textStyle="bold"
-            android:hint="Place Name"/>
+            android:layout_alignParentEnd="false" />
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_place"
+            android:hint="Enter Place"
+            android:textSize="12dp"
+            android:layout_below="@+id/textView_place"
+            android:layout_alignStart="@+id/textView_place" />
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageButton_camera"
+            android:layout_below="@+id/editText_place"
+            android:layout_centerHorizontal="true"
+            android:src="@android:drawable/ic_menu_camera" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageButton_microphone"
+            android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
+            android:layout_below="@+id/editText_place"
+            android:layout_toEndOf="@+id/imageButton_camera" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageButton_location"
+            android:layout_alignBottom="@+id/imageButton_camera"
+            android:layout_toStartOf="@+id/imageButton_camera"
+            android:src="@android:drawable/ic_menu_mylocation" />
+
         <TextView
-            android:id="@+id/row_txtPlaceDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="10dp"
-            android:textColor="@android:color/black"
-            android:textSize="16dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="DESCRIPTION"
+            android:id="@+id/textView_description"
+            android:phoneNumber="false"
+            android:textColor="#ff000000"
             android:textStyle="bold"
-            android:hint="Description"/>
-    </GridLayout>
-</GridLayout>
+            android:layout_below="@+id/imageButton"
+            android:layout_alignStart="@+id/editText_place" />
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_description"
+            android:layout_below="@+id/textView_description"
+            android:layout_alignStart="@+id/textView_description"
+            android:hint="Enter Place Description"
+            android:textSize="12dp" />
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageButton"
+            android:layout_below="@+id/imageButton_camera"
+            android:layout_centerHorizontal="true"
+            android:src="@android:drawable/ic_menu_mapmode" />
+
+    </RelativeLayout>
+
+</LinearLayout>
+

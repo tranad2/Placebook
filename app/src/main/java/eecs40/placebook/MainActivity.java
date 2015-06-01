@@ -92,18 +92,19 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_settings:
-                /* * Code to show settings * */;
+                //Code to show settings
                 return true ;
-//            case R.id.action_new_place:
-//                /* * Code to add a new place * */;
-//                return true ;
-//            case R.id.action_view_all:
-//                /* * Code to show all places * */;
-//                return true ;
+            case R.id.action_new_place:
+                //Code to add a new place
+                return true ;
+            case R.id.action_view_all:
+                //Code to show all places
+                return true ;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     /*CAMERA*/
     //...
