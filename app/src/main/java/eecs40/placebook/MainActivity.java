@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,12 +14,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -39,38 +46,64 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<PlacebookEntry> mPlacebookEntries;
     private PlacebookEntry mPlacebookEntry;
     private GoogleApiClient mGoogleApiClient;
+    private String mCurrentFilePath;
+
+    private static final int REQUEST_RESOLVE_ERROR = 1000;
+    private static final String DIALOG_ERROR = "dialog_error";
+    private boolean mResolvingError = false;
+
 
     @Override
-    protected void onCreate ( Bundle savedInstanceState ) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent ();
-        mPlacebookEntries = intent.getParcelableArrayListExtra( MainActivity.VIEW_ALL_KEY);
+        Intent intent = getIntent();
+        mPlacebookEntries = intent.getParcelableArrayListExtra(MainActivity.VIEW_ALL_KEY);
         // Populate the history list view
-        //initGoogleApi();
+        initGoogleApi();
         setContentView(R.layout.activity_main);
+
+        ImageButton btnCamera = (ImageButton) findViewById(R.id.imageButton_camera);
+        ImageButton btnLocation = (ImageButton) findViewById(R.id.imageButton_location);
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO
+                dispatchTakePictureIntent();
+            }
+        });
+
+        btnLocation.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO
+                launchPlacePicker();
+            }
+        });
     }
 
-    // Call dispatchViewAllPlaces() when its menu command is selected .
-//    private void dispatchViewAllPlaces() {
-//        Intent intent = new Intent(this, HistoryActivity.class);
-//        intent.putParcelableArrayListExtra(VIEW_ALL_KEY, mPlacebookEntries);
-//        try {
-//            startActivityForResult(intent, REQUEST_VIEW_ALL);
-//        } catch (ActivityNotFoundException a) {}
-//    }
+    //Call dispatchViewAllPlaces() when its menu command is selected .
+    private void dispatchViewAllPlaces() {
+        //TODO
+        Intent intent = new Intent(VIEW_ALL_KEY);
+        intent.putParcelableArrayListExtra(VIEW_ALL_KEY, mPlacebookEntries);
+        try {
+            startActivityForResult(intent, REQUEST_VIEW_ALL);
+        } catch (ActivityNotFoundException a) {}
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //TODO
         if (resultCode == RESULT_OK && requestCode == REQUEST_VIEW_ALL && data != null) {
-            ArrayList<PlacebookEntry> placebookEntrys = data.getParcelableArrayListExtra(VIEW_ALL_KEY); // Check if any entry was deleted .
+            ArrayList<PlacebookEntry> placebookEntrys = data.getParcelableArrayListExtra(VIEW_ALL_KEY);
+            // Check if any entry was deleted .
 
         }
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
             // Save previously generated unique file path in current Placebook entry
+            mPlacebookEntry.setPhotoPath(mCurrentFilePath);
         }
 
-        if ( resultCode == RESULT_OK && requestCode == REQUEST_SPEECH_INPUT && data != null ) {
-            ArrayList<String>result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_SPEECH_INPUT && data != null) {
+            ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             // Append result.get(0) to the place name or description text view
             // according to which one had focus when voice recognizer was launched
         }
@@ -78,7 +111,15 @@ public class MainActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_PLACE_PICKER && data != null) {
             Place place = PlacePicker.getPlace(data, this);
             //Set place name text view to place.getName()
-            place.getName();
+            TextView view = (TextView) findViewById(R.id.textView_place);
+            view.setText(place.getName());
+        }
+
+        if(resultCode == RESULT_OK && requestCode == REQUEST_RESOLVE_ERROR && data != null){
+            mResolvingError = false;
+            if(!mGoogleApiClient.isConnecting() && !mGoogleApiClient.isConnected()){
+                mGoogleApiClient.connect();
+            }
         }
     }
 
@@ -90,16 +131,17 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        //TODO
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 //Code to show settings
-                return true ;
+                return true;
             case R.id.action_new_place:
                 //Code to add a new place
-                return true ;
+                return true;
             case R.id.action_view_all:
                 //Code to show all places
-                return true ;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -107,13 +149,12 @@ public class MainActivity extends ActionBarActivity {
 
 
     /*CAMERA*/
-    //...
     // Call dispatchTakePictureIntent() when the camera button is clicked .
-    private void dispatchTakePictureIntent () {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there ’s a camera activity to handle the intent
         File photoFile = null;
-        if ( takePictureIntent . resolveActivity ( getPackageManager () ) != null ) {
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
@@ -136,7 +177,7 @@ public class MainActivity extends ActionBarActivity {
         // Create an image file name
         String fname = "Placebook_";
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_"+fname;
+        String imageFileName = "JPEG_" + timeStamp + "_" + fname;
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -145,31 +186,68 @@ public class MainActivity extends ActionBarActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mPlacebookEntry.setPhotoPath(image.getAbsolutePath());
+        mCurrentFilePath = image.getAbsolutePath();
         return image;
     }
 
     /*SPEECH INPUT*/
     //...
     // Call dispatchSpeechInputIntent() when the speech-to-text button is clicked.
-    void dispatchSpeechInputIntent () {
+    void dispatchSpeechInputIntent() {
+        //TODO
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM );
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 //        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_prompt));
         try {
             startActivityForResult(intent, REQUEST_SPEECH_INPUT);
         } catch (ActivityNotFoundException a) {
             // Handle Exception
+            a.printStackTrace();
         }
     }
 
 
     // Call initGoogleApi() from MainActivity.onCreate()
     private void initGoogleApi() {
-        //mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Places.GEO_DATA_API).addApi(Places.PLACE_DETECTION_API).addConnectionCallbacks(new GoogleConnectionCallbacks()).addOnConnectionFailedListener(new GoogleApiOnConnectionFailedListener()).build();
+        //TODO
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(new ConnectionCallbacks() {
+                    public void onConnected(Bundle connectionHint) {
+                        //Get place
+                    }
+
+                    public void onConnectionSuspended(int cause) {
+                        //disable UI components until onConnected() called
+                    }
+
+                })
+                .addOnConnectionFailedListener(new OnConnectionFailedListener() {
+                    public void onConnectionFailed(ConnectionResult result) {
+                        if (mResolvingError) {
+                            return;
+                        } else if (result.hasResolution()) {
+                            try {
+                                mResolvingError = true;
+                                result.startResolutionForResult(MainActivity.this, REQUEST_RESOLVE_ERROR);
+                            } catch (IntentSender.SendIntentException e) {
+                                mGoogleApiClient.connect();
+                            }
+                        } else{
+                            mResolvingError = true;
+                            CharSequence text = "ErrorDialog";
+                            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .build();
     }
-    // Call launchPlacePicker() when the Pick-A-Place button is clicked
+
+                        // Call launchPlacePicker() when the Pick-A-Place button is clicked
+
     private void launchPlacePicker () {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         Context context = getApplicationContext();
@@ -192,7 +270,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy () {
-        super . onDestroy ();
+        super.onDestroy ();
         Intent intent = new Intent ();
         intent.putParcelableArrayListExtra(MainActivity.VIEW_ALL_KEY, mPlacebookEntries);
         setResult(Activity.RESULT_OK, intent);

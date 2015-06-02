@@ -14,7 +14,6 @@ public class PlacebookEntry implements Parcelable {
         this.name = source.readString();
         this.description = source.readString();
         this.photoPath = source.readString();
-        //...
     }
 
     @Override
