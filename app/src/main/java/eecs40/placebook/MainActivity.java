@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,17 +65,22 @@ public class MainActivity extends ActionBarActivity {
 
         ImageButton btnCamera = (ImageButton) findViewById(R.id.imageButton_camera);
         ImageButton btnLocation = (ImageButton) findViewById(R.id.imageButton_location);
+        ImageButton btnPlaces = (ImageButton) findViewById(R.id.imageButton_viewAllPlaces);
         btnCamera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO
                 dispatchTakePictureIntent();
             }
         });
 
         btnLocation.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO
                 launchPlacePicker();
+            }
+        });
+
+        btnPlaces.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO
             }
         });
     }
@@ -111,7 +117,7 @@ public class MainActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_PLACE_PICKER && data != null) {
             Place place = PlacePicker.getPlace(data, this);
             //Set place name text view to place.getName()
-            TextView view = (TextView) findViewById(R.id.textView_place);
+            EditText view = (EditText) findViewById(R.id.editText_place);
             view.setText(place.getName());
         }
 

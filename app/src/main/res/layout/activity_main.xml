@@ -63,7 +63,7 @@
             android:phoneNumber="false"
             android:textColor="#ff000000"
             android:textStyle="bold"
-            android:layout_below="@+id/imageButton"
+            android:layout_below="@+id/imageButton_viewAllPlaces"
             android:layout_alignStart="@+id/editText_place" />
 
         <EditText
@@ -78,7 +78,7 @@
         <ImageButton
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:id="@+id/imageButton"
+            android:id="@+id/imageButton_viewAllPlaces"
             android:layout_below="@+id/imageButton_camera"
             android:layout_centerHorizontal="true"
             android:src="@android:drawable/ic_menu_mapmode" />
