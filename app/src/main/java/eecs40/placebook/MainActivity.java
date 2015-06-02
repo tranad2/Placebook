@@ -153,6 +153,7 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             case R.id.action_delete_place:
                 //Code to delete place
+                return true;
             case R.id.action_settings:
                 //Code to show settings
                 return true;
