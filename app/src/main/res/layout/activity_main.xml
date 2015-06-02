@@ -5,12 +5,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="left">
+        android:layout_gravity="left"
+        android:longClickable="false">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="PLACE"
             android:id="@+id/textView_place"
             android:layout_marginStart="30dp"
             android:layout_marginTop="30dp"
@@ -19,16 +19,28 @@
             android:layout_alignParentStart="true"
             android:typeface="normal"
             android:textStyle="bold"
-            android:layout_alignParentEnd="false" />
+            android:layout_alignParentEnd="false"
+            android:text="@string/textView_place" />
 
         <EditText
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/editText_place"
-            android:hint="Enter Place"
-            android:textSize="12dp"
+            android:hint="@string/editText_place"
+            android:textSize="12sp"
             android:layout_below="@+id/textView_place"
             android:layout_alignStart="@+id/textView_place" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageButton_location"
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:layout_below="@+id/editText_place"
+            android:layout_toStartOf="@+id/imageButton_camera"
+            android:longClickable="true"
+            android:cropToPadding="true"
+            android:contentDescription="@string/imageButton_pip" />
 
         <ImageButton
             android:layout_width="100dp"
@@ -36,7 +48,9 @@
             android:id="@+id/imageButton_camera"
             android:layout_below="@+id/editText_place"
             android:layout_centerHorizontal="true"
-            android:src="@android:drawable/ic_menu_camera" />
+            android:src="@android:drawable/ic_menu_camera"
+            android:contentDescription="@string/imageButton_camera"
+            android:longClickable="true" />
 
         <ImageButton
             android:layout_width="50dp"
@@ -44,27 +58,22 @@
             android:id="@+id/imageButton_microphone"
             android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
             android:layout_below="@+id/editText_place"
-            android:layout_toEndOf="@+id/imageButton_camera" />
-
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageButton_location"
-            android:layout_alignBottom="@+id/imageButton_camera"
-            android:layout_toStartOf="@+id/imageButton_camera"
-            android:src="@android:drawable/ic_menu_mylocation" />
+            android:layout_toEndOf="@+id/imageButton_camera"
+            android:contentDescription="@string/imageButton_voice"
+            android:longClickable="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="DESCRIPTION"
+            android:text="@string/textView_description"
             android:id="@+id/textView_description"
-            android:phoneNumber="false"
             android:textColor="#ff000000"
             android:textStyle="bold"
-            android:layout_below="@+id/imageButton_viewAllPlaces"
-            android:layout_alignStart="@+id/editText_place" />
+            android:layout_below="@+id/imageButton_location"
+            android:layout_alignStart="@+id/editText_place"
+            android:layout_marginTop="22dp"
+            android:singleLine="true" />
 
         <EditText
             android:layout_width="300dp"
@@ -72,16 +81,8 @@
             android:id="@+id/editText_description"
             android:layout_below="@+id/textView_description"
             android:layout_alignStart="@+id/textView_description"
-            android:hint="Enter Place Description"
-            android:textSize="12dp" />
-
-        <ImageButton
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:id="@+id/imageButton_viewAllPlaces"
-            android:layout_below="@+id/imageButton_camera"
-            android:layout_centerHorizontal="true"
-            android:src="@android:drawable/ic_menu_mapmode" />
+            android:hint="@string/editText_description"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 

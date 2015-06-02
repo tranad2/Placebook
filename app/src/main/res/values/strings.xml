@@ -1,8 +1,15 @@
 <resources>
     <string name="app_name">PlaceBook</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="action_new_place">New Place</string>
-    <string name="action_view_all">View All</string>
+    <string name="action_view_all_places">View All Places</string>
+    <string name="action_edit_place">Edit Place</string>
+    <string name="action_delete_place">Delete Place</string>
+    <string name="action_settings">Settings</string>
+    <string name="textView_place">PLACE</string>
+    <string name="editText_place">Enter a place name</string>
+    <string name="imageButton_pip">Pick a Place</string>
+    <string name="imageButton_camera">Take a Picture</string>
+    <string name="imageButton_voice">Say a Place</string>
+    <string name="textView_description">DESCRIPTION</string>
+    <string name="editText_description">Enter a place description</string>
 </resources>

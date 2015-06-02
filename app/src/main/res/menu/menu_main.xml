@@ -2,19 +2,26 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
-    <!--Search, should appear as action button-->
+    <!--Buttons-->
     <item android:id="@+id/action_new_place"
           android:icon="@drawable/ic_menu_add"
           android:title="@string/action_new_place"
           app:showAsAction="ifRoom" />
+    <!--Overflow -->
     <item android:id="@+id/action_view_all"
-          android:icon="@drawable/ic_menu_sort_by_size"
-          android:title="@string/action_view_all"
-          app:showAsAction="ifRoom" />
-    <!--Settings, should always be in the overflow -->
+        android:title="@string/action_view_all_places"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_edit_place"
+        android:title="@string/action_edit_place"
+        android:orderInCategory="2"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_delete_place"
+        android:title="@string/action_delete_place"
+        android:orderInCategory="3"
+        app:showAsAction="never" />
     <item
           android:id="@+id/action_settings"
-          android:icon="@drawable/ic_menu_settings_holo_light"
           android:title="@string/action_settings"
           android:orderInCategory="100"
           app:showAsAction="never" />

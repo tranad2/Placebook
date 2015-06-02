@@ -63,9 +63,9 @@ public class MainActivity extends ActionBarActivity {
         initGoogleApi();
         setContentView(R.layout.activity_main);
 
-        ImageButton btnCamera = (ImageButton) findViewById(R.id.imageButton_camera);
         ImageButton btnLocation = (ImageButton) findViewById(R.id.imageButton_location);
-        ImageButton btnPlaces = (ImageButton) findViewById(R.id.imageButton_viewAllPlaces);
+        ImageButton btnCamera = (ImageButton) findViewById(R.id.imageButton_camera);
+        ImageButton btnMicrophone = (ImageButton) findViewById(R.id.imageButton_microphone);
         btnCamera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dispatchTakePictureIntent();
@@ -78,9 +78,9 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        btnPlaces.setOnClickListener(new View.OnClickListener() {
+        btnMicrophone.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO
+                dispatchSpeechInputIntent();
             }
         });
     }
@@ -129,6 +129,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //                             M E N U     B U T T O N S                                      //
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -154,7 +157,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    /*CAMERA*/
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                   C A M E R A                                              //
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Call dispatchTakePictureIntent() when the camera button is clicked .
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -196,8 +202,10 @@ public class MainActivity extends ActionBarActivity {
         return image;
     }
 
-    /*SPEECH INPUT*/
-    //...
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //                           V O I C E     R E C O G N I T I O N                              //
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Call dispatchSpeechInputIntent() when the speech-to-text button is clicked.
     void dispatchSpeechInputIntent() {
         //TODO
@@ -213,6 +221,29 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //                           P L A C E     P I C K E R                                        //
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Call launchPlacePicker() when the Pick-A-Place button is clicked
+    private void launchPlacePicker () {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        Context context = getApplicationContext();
+        try {
+            startActivityForResult(builder.build(context), REQUEST_PLACE_PICKER);
+        } catch (GooglePlayServicesRepairableException e) {
+            //Handle exception - Display a Toast message
+            e.printStackTrace();
+            CharSequence text = "Google Play Services is not installed";
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+            return;
+        } catch (GooglePlayServicesNotAvailableException e) {
+            //Handle exception - Display a Toast message
+            e.printStackTrace();
+            CharSequence text = "Google Play Services is not available";
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
 
     // Call initGoogleApi() from MainActivity.onCreate()
     private void initGoogleApi() {
@@ -250,28 +281,6 @@ public class MainActivity extends ActionBarActivity {
                     }
                 })
                 .build();
-    }
-
-                        // Call launchPlacePicker() when the Pick-A-Place button is clicked
-
-    private void launchPlacePicker () {
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        Context context = getApplicationContext();
-        try {
-            startActivityForResult(builder.build(context), REQUEST_PLACE_PICKER);
-        } catch (GooglePlayServicesRepairableException e) {
-            //Handle exception - Display a Toast message
-            e.printStackTrace();
-            CharSequence text = "Google Play Services is not installed";
-            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-            return;
-        } catch (GooglePlayServicesNotAvailableException e) {
-            //Handle exception - Display a Toast message
-            e.printStackTrace();
-            CharSequence text = "Google Play Services is not available";
-            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-            return;
-        }
     }
 
     @Override
