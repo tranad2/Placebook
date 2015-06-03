@@ -12,4 +12,5 @@
     <string name="imageButton_voice">Say a Place</string>
     <string name="textView_description">DESCRIPTION</string>
     <string name="editText_description">Enter a place description</string>
+    <string name="textView_history">HISTORY</string>
 </resources>
