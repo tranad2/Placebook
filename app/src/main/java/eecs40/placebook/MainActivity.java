@@ -53,10 +53,16 @@ public class MainActivity extends ActionBarActivity {
     private static final String DIALOG_ERROR = "dialog_error";
     private boolean mResolvingError = false;
 
+    private long entryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        entryId = 0;
+        mPlacebookEntries = new ArrayList<PlacebookEntry>();
+        mPlacebookEntry = new PlacebookEntry(entryId);
+
         Intent intent = getIntent();
         mPlacebookEntries = intent.getParcelableArrayListExtra(MainActivity.VIEW_ALL_KEY);
         // Populate the history list view
@@ -66,6 +72,7 @@ public class MainActivity extends ActionBarActivity {
         ImageButton btnLocation = (ImageButton) findViewById(R.id.imageButton_location);
         ImageButton btnCamera = (ImageButton) findViewById(R.id.imageButton_camera);
         ImageButton btnMicrophone = (ImageButton) findViewById(R.id.imageButton_microphone);
+
         btnCamera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dispatchTakePictureIntent();
@@ -100,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_VIEW_ALL && data != null) {
             ArrayList<PlacebookEntry> placebookEntrys = data.getParcelableArrayListExtra(VIEW_ALL_KEY);
             // Check if any entry was deleted .
-
+            //Focus on ListView
         }
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
@@ -112,6 +119,8 @@ public class MainActivity extends ActionBarActivity {
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             // Append result.get(0) to the place name or description text view
             // according to which one had focus when voice recognizer was launched
+            mPlacebookEntry.appendDescription(result.get(0));
+
         }
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_PLACE_PICKER && data != null) {
@@ -119,6 +128,7 @@ public class MainActivity extends ActionBarActivity {
             //Set place name text view to place.getName()
             EditText view = (EditText) findViewById(R.id.editText_place);
             view.setText(place.getName());
+
         }
 
         if(resultCode == RESULT_OK && requestCode == REQUEST_RESOLVE_ERROR && data != null){
@@ -144,9 +154,16 @@ public class MainActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_new_place:
                 //Code to add a new place
+                EditText desc = (EditText)findViewById(R.id.editText_description);
+                EditText name = (EditText)findViewById(R.id.editText_place);
+                mPlacebookEntry.setName(name.getText().toString());
+                mPlacebookEntry.appendDescription(desc.getText().toString());
+                mPlacebookEntries.add(mPlacebookEntry);
+                entryId++;
                 return true;
             case R.id.action_view_all:
                 //Code to show all places
+                //Inflate(?) ListView of places
                 return true;
             case R.id.action_edit_place:
                 //Code to edit place
@@ -204,7 +221,7 @@ public class MainActivity extends ActionBarActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentFilePath = image.getAbsolutePath();
+        mPlacebookEntry.setPhotoPath(image.getAbsolutePath());
         return image;
     }
 

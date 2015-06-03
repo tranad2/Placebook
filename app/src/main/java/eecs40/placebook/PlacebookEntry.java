@@ -9,6 +9,10 @@ public class PlacebookEntry implements Parcelable {
     private String description;
     private String photoPath;
 
+    public PlacebookEntry(long id){
+        this.id = id;
+    }
+
     public PlacebookEntry(Parcel source) {
         this.id = source.readLong();
         this.name = source.readString();
@@ -27,6 +31,14 @@ public class PlacebookEntry implements Parcelable {
     @Override
     public int describeContents () {
         return 0;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void appendDescription(String description){
+        this.description+=description;
     }
 
     public void setPhotoPath(String path){
