@@ -5,9 +5,7 @@
     android:background="@drawable/wallpaper_zion">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:longClickable="false"
-        android:id="@+id/">
+        android:layout_height="match_parent">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,7 +109,14 @@
             android:fillViewport="true"
             android:background="#9ccdcdcd"
             android:layout_below="@+id/textView_history"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:divider="#82000000"
+            android:dividerHeight="1dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:smoothScrollbar="true"
+            android:scrollingCache="true"
+            android:choiceMode="singleChoice" />
 
     </RelativeLayout>
 
