@@ -14,9 +14,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,21 +48,26 @@ public class MainActivity extends ActionBarActivity {
     private static final int REQUEST_PLACE_PICKER = 1003;
     private ArrayList<PlacebookEntry> mPlacebookEntries;
     private PlacebookEntry mPlacebookEntry;
+
     private GoogleApiClient mGoogleApiClient;
+    private ListView mListView;
     private String mCurrentFilePath;
+    private long entryId;
 
     private static final int REQUEST_RESOLVE_ERROR = 1000;
     private static final String DIALOG_ERROR = "dialog_error";
     private boolean mResolvingError = false;
 
-    private long entryId;
+    ArrayList<String> listItems = new ArrayList<>();
+    ArrayAdapter<String> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         entryId = 0;
-        mPlacebookEntries = new ArrayList<PlacebookEntry>();
+        mPlacebookEntries = new ArrayList();
         mPlacebookEntry = new PlacebookEntry(entryId);
 
         Intent intent = getIntent();
@@ -90,6 +97,11 @@ public class MainActivity extends ActionBarActivity {
                 dispatchSpeechInputIntent();
             }
         });
+
+        mListView = (ListView)findViewById(R.id.ListView_history);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item, listItems);
+        mListView.setAdapter(adapter);
+
     }
 
     //Call dispatchViewAllPlaces() when its menu command is selected .
@@ -107,7 +119,8 @@ public class MainActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_VIEW_ALL && data != null) {
             ArrayList<PlacebookEntry> placebookEntrys = data.getParcelableArrayListExtra(VIEW_ALL_KEY);
             // Check if any entry was deleted .
-            //Focus on ListView
+            // Check on change
+            Toast.makeText(this, "View_ALL", Toast.LENGTH_SHORT).show();
         }
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
@@ -158,12 +171,17 @@ public class MainActivity extends ActionBarActivity {
                 EditText name = (EditText)findViewById(R.id.editText_place);
                 mPlacebookEntry.setName(name.getText().toString());
                 mPlacebookEntry.appendDescription(desc.getText().toString());
-                mPlacebookEntries.add(mPlacebookEntry);
                 entryId++;
+
+                Intent intent = new Intent();
+                intent.putExtra(VIEW_ALL_KEY,mPlacebookEntry);
+                mPlacebookEntries = intent.getParcelableArrayListExtra(VIEW_ALL_KEY);
+
                 return true;
             case R.id.action_view_all:
                 //Code to show all places
                 //Inflate(?) ListView of places
+                dispatchViewAllPlaces();
                 return true;
             case R.id.action_edit_place:
                 //Code to edit place
@@ -221,7 +239,9 @@ public class MainActivity extends ActionBarActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
+        mCurrentFilePath = image.getAbsolutePath();
         mPlacebookEntry.setPhotoPath(image.getAbsolutePath());
+
         return image;
     }
 
@@ -312,5 +332,10 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent ();
         intent.putParcelableArrayListExtra(MainActivity.VIEW_ALL_KEY, mPlacebookEntries);
         setResult(Activity.RESULT_OK, intent);
+    }
+
+    public void addItems(View v){
+        //listItems.add();
+        adapter.notifyDataSetChanged();
     }
 }
