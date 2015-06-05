@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -117,9 +118,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //TODO
         if (resultCode == RESULT_OK && requestCode == REQUEST_VIEW_ALL && data != null) {
-            ArrayList<PlacebookEntry> placebookEntrys = data.getParcelableArrayListExtra(VIEW_ALL_KEY);
             // Check if any entry was deleted .
             // Check on change
+            Log.v("MainActivity", mPlacebookEntries.toString());
             Toast.makeText(this, "View_ALL", Toast.LENGTH_SHORT).show();
         }
 
@@ -171,12 +172,8 @@ public class MainActivity extends ActionBarActivity {
                 EditText name = (EditText)findViewById(R.id.editText_place);
                 mPlacebookEntry.setName(name.getText().toString());
                 mPlacebookEntry.appendDescription(desc.getText().toString());
+                mPlacebookEntries.add(mPlacebookEntry);
                 entryId++;
-
-                Intent intent = new Intent();
-                intent.putExtra(VIEW_ALL_KEY,mPlacebookEntry);
-                mPlacebookEntries = intent.getParcelableArrayListExtra(VIEW_ALL_KEY);
-
                 return true;
             case R.id.action_view_all:
                 //Code to show all places

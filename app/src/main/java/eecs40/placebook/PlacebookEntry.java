@@ -45,6 +45,11 @@ public class PlacebookEntry implements Parcelable {
         photoPath = path;
     }
 
+    public String toString(){
+        String str = "ID: "+id+" Name: "+name+" Description: "+description+" photoPath: "+photoPath;
+        return str;
+    }
+
     public static final Parcelable.Creator<PlacebookEntry> CREATOR = new Parcelable.Creator<PlacebookEntry>() {
         @Override
         public PlacebookEntry createFromParcel(Parcel source) {
