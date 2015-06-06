@@ -1,5 +1,7 @@
 package eecs40.placebook;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -46,6 +48,21 @@ public class PlacebookEntry implements Parcelable {
 
     public void setPhotoPath(String path){
         photoPath = path;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public Bitmap getImage(){
+        Bitmap myBitmap = null;
+        if(photoPath != "")
+             myBitmap = BitmapFactory.decodeFile(photoPath);
+        return myBitmap;
     }
 
     public String toString(){

@@ -12,13 +12,16 @@ import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +53,7 @@ public class MainActivity extends ActionBarActivity {
     private static final int REQUEST_PLACE_PICKER = 1003;
     private static final int FOCUS_PLACE = 2001;
     private static final int FOCUS_DESC = 2002;
-    private ArrayList<PlacebookEntry> mPlacebookEntries = new ArrayList<>();
+    private final ArrayList<PlacebookEntry> mPlacebookEntries = new ArrayList<>();
     private PlacebookEntry mPlacebookEntry;
 
     private GoogleApiClient mGoogleApiClient;
@@ -63,8 +66,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String DIALOG_ERROR = "dialog_error";
     private boolean mResolvingError = false;
 
-    ArrayList<String> listItems = new ArrayList<>();
-    ArrayAdapter<String> adapter;
+    ItemsAdapter adapter;
 
 
     @Override
@@ -115,7 +117,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
         mListView = (ListView)findViewById(R.id.ListView_history);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item, listItems);
+        adapter = new ItemsAdapter(this, android.R.layout.simple_selectable_list_item, mPlacebookEntries);
         mListView.setAdapter(adapter);
 
     }
@@ -206,7 +208,8 @@ public class MainActivity extends ActionBarActivity {
                 mPlacebookEntry.appendDescription(desc.getText().toString());
                 mPlacebookEntry.setPhotoPath(mCurrentFilePath);
                 mPlacebookEntries.add(mPlacebookEntry);
-                entryId++;
+
+                adapter.notifyDataSetChanged();
 
                 desc.setText("");
                 name.setText("");
@@ -378,8 +381,37 @@ public class MainActivity extends ActionBarActivity {
         setResult(Activity.RESULT_OK, intent);
     }
 
-    public void addItems(View v){
-        //listItems.add();
-        adapter.notifyDataSetChanged();
+    private class ItemsAdapter extends ArrayAdapter<PlacebookEntry> {
+
+        private final ArrayList<PlacebookEntry> items;
+
+        public ItemsAdapter(Context context, int textViewResourceId, ArrayList<PlacebookEntry> items) {
+            super(context, textViewResourceId, items);
+            this.items = items;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+            if (v == null) {
+                LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = vi.inflate(R.layout.history_item, null);
+            }
+
+            PlacebookEntry it = items.get(position);
+            if (it != null) {
+                ImageView iv = (ImageView) v.findViewById(R.id.history_list_image);
+                TextView tv = (TextView) v.findViewById(R.id.history_list_name);
+                if (iv != null) {
+                    iv.setImageBitmap(it.getImage());
+                }
+                if (tv != null){
+                    tv.setText(it.getName());
+                }
+            }
+
+            return v;
+        }
     }
+
 }
