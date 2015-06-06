@@ -400,13 +400,17 @@ public class MainActivity extends ActionBarActivity {
 
             PlacebookEntry it = items.get(position);
             if (it != null) {
-                ImageView iv = (ImageView) v.findViewById(R.id.history_list_image);
-                TextView tv = (TextView) v.findViewById(R.id.history_list_name);
-                if (iv != null) {
-                    iv.setImageBitmap(it.getImage());
+                TextView hPlace = (TextView) v.findViewById(R.id.history_list_name);
+                ImageView hImage = (ImageView) v.findViewById(R.id.history_list_image);
+                TextView hDesc = (TextView) v.findViewById(R.id.history_list_desc);
+                if (hPlace != null){
+                    hPlace.setText(it.getName());
                 }
-                if (tv != null){
-                    tv.setText(it.getName());
+                if (hImage != null) {
+                    hImage.setImageBitmap(it.getImage());
+                }
+                if (hDesc != null) {
+                    hDesc.setText(it.getDescription());
                 }
             }
 
