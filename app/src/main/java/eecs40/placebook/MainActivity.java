@@ -12,11 +12,14 @@ import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ActionMode.Callback{
     public static final String TAG = "MainActivity";
     public static final String VIEW_ALL_KEY = "eecs40.placebook.EXTRA_VIEW_ALL";
     private static final int REQUEST_VIEW_ALL = 1005;
@@ -58,6 +61,8 @@ public class MainActivity extends ActionBarActivity {
 
     private GoogleApiClient mGoogleApiClient;
     private ListView mListView;
+    protected Object mActionMode ;
+    public int selectedItem = -1;
     private String mCurrentFilePath;
     private long entryId;
     private int focus = FOCUS_PLACE;
@@ -116,15 +121,29 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+
+
         mListView = (ListView)findViewById(R.id.ListView_history);
         adapter = new ItemsAdapter(this, android.R.layout.simple_selectable_list_item, mPlacebookEntries);
         mListView.setAdapter(adapter);
+
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long
+                    id) {
+                if (mActionMode != null)
+                    return false;
+                selectedItem = position;
+                mActionMode = MainActivity.this.startActionMode(MainActivity.this);
+                view.setSelected(true);
+                return true;
+            }
+        });
 
     }
 
     //Call dispatchViewAllPlaces() when its menu command is selected .
     private void dispatchViewAllPlaces() {
-        //TODO
         Intent intent = new Intent(VIEW_ALL_KEY);
         intent.putParcelableArrayListExtra(VIEW_ALL_KEY, mPlacebookEntries);
         try {
@@ -133,11 +152,8 @@ public class MainActivity extends ActionBarActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //TODO
         if (resultCode == RESULT_OK && requestCode == REQUEST_VIEW_ALL && data != null) {
             // Check if any entry was deleted .
-            // Check on change
-            Log.v(TAG, mPlacebookEntries.toString());
             Toast.makeText(this, "View_ALL", Toast.LENGTH_SHORT).show();
         }
 
@@ -190,18 +206,11 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //TODO
-        Log.v(TAG,"Click");
-        Log.v(TAG,"ID"+entryId);
         switch (item.getItemId()) {
             case R.id.action_new_place:
-                Log.v(TAG,"Click New"+mPlacebookEntries);
-
                 //Code to add a new place
                 mPlacebookEntry = new PlacebookEntry(entryId);
-                if(mPlacebookEntries == null){
-                    Log.v(TAG,"NULL");
-                }
+
                 EditText desc = (EditText)findViewById(R.id.editText_description);
                 EditText name = (EditText)findViewById(R.id.editText_place);
                 mPlacebookEntry.setName(name.getText().toString());
@@ -213,8 +222,6 @@ public class MainActivity extends ActionBarActivity {
 
                 desc.setText("");
                 name.setText("");
-                mCurrentFilePath="";
-                Log.v(TAG,"ENTRY: "+mPlacebookEntries);
                 return true;
             case R.id.action_view_all:
                 //Code to show all places
@@ -231,7 +238,6 @@ public class MainActivity extends ActionBarActivity {
                 //Code to show settings
                 return true;
             default:
-                Log.v(TAG,"Click Default");
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -258,6 +264,7 @@ public class MainActivity extends ActionBarActivity {
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                photoFile = null;
             }
         } else {
             CharSequence text = "No camera app available";
@@ -290,7 +297,6 @@ public class MainActivity extends ActionBarActivity {
 
     // Call dispatchSpeechInputIntent() when the speech-to-text button is clicked.
     void dispatchSpeechInputIntent() {
-        //TODO
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
@@ -337,7 +343,6 @@ public class MainActivity extends ActionBarActivity {
 
     // Call initGoogleApi() from MainActivity.onCreate()
     private void initGoogleApi() {
-        //TODO
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -379,6 +384,35 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent ();
         intent.putParcelableArrayListExtra(MainActivity.VIEW_ALL_KEY, mPlacebookEntries);
         setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public boolean onCreateActionMode ( ActionMode mode , Menu menu ) {
+        MenuInflater inflater = mode . getMenuInflater ();
+        inflater.inflate(R.menu.rowselection,menu);
+        return true ;
+    }
+    @Override
+    public boolean onPrepareActionMode ( ActionMode mode , Menu menu ) {
+        return false ;
+    }
+    @Override
+    public boolean onActionItemClicked ( ActionMode mode , MenuItem item ) {
+        switch ( item.getItemId()) {
+            case R.id.action_delete_place :
+                // Delete Item
+                mPlacebookEntries.remove(selectedItem);
+                adapter.notifyDataSetChanged();
+                mode.finish ();
+                return true ;
+            default:
+                return false ;
+        }
+    }
+    @Override
+    public void onDestroyActionMode ( ActionMode mode ) {
+        mActionMode = null ;
+        selectedItem = -1;
     }
 
     private class ItemsAdapter extends ArrayAdapter<PlacebookEntry> {

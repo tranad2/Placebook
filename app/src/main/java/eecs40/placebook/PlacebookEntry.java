@@ -60,8 +60,12 @@ public class PlacebookEntry implements Parcelable {
 
     public Bitmap getImage(){
         Bitmap myBitmap = null;
-        if(photoPath != "")
-             myBitmap = BitmapFactory.decodeFile(photoPath);
+
+        if(photoPath != "") {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 16;
+            myBitmap = BitmapFactory.decodeFile(photoPath, options);
+        }
         return myBitmap;
     }
 
