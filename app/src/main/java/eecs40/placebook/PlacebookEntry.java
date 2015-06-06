@@ -11,6 +11,9 @@ public class PlacebookEntry implements Parcelable {
 
     public PlacebookEntry(long id){
         this.id = id;
+        name = "";
+        description = "";
+        photoPath = "";
     }
 
     public PlacebookEntry(Parcel source) {

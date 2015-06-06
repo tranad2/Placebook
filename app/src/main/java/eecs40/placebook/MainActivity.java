@@ -42,12 +42,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity {
+    public static final String TAG = "MainActivity";
     public static final String VIEW_ALL_KEY = "eecs40.placebook.EXTRA_VIEW_ALL";
     private static final int REQUEST_VIEW_ALL = 1005;
     private static final int REQUEST_IMAGE_CAPTURE = 1001;
     private static final int REQUEST_SPEECH_INPUT = 1002;
     private static final int REQUEST_PLACE_PICKER = 1003;
-    private ArrayList<PlacebookEntry> mPlacebookEntries;
+    private ArrayList<PlacebookEntry> mPlacebookEntries = new ArrayList<>();
     private PlacebookEntry mPlacebookEntry;
 
     private GoogleApiClient mGoogleApiClient;
@@ -68,11 +69,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         entryId = 0;
-        mPlacebookEntries = new ArrayList();
         mPlacebookEntry = new PlacebookEntry(entryId);
 
-        Intent intent = getIntent();
-        mPlacebookEntries = intent.getParcelableArrayListExtra(MainActivity.VIEW_ALL_KEY);
         // Populate the history list view
         initGoogleApi();
         setContentView(R.layout.activity_main);
@@ -120,7 +118,7 @@ public class MainActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_VIEW_ALL && data != null) {
             // Check if any entry was deleted .
             // Check on change
-            Log.v("MainActivity", mPlacebookEntries.toString());
+            Log.v(TAG, mPlacebookEntries.toString());
             Toast.makeText(this, "View_ALL", Toast.LENGTH_SHORT).show();
         }
 
@@ -165,15 +163,29 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //TODO
+        Log.v(TAG,"Click");
+        Log.v(TAG,"ID"+entryId);
         switch (item.getItemId()) {
             case R.id.action_new_place:
+                Log.v(TAG,"Click New"+mPlacebookEntries);
+
                 //Code to add a new place
+                mPlacebookEntry = new PlacebookEntry(entryId);
+                if(mPlacebookEntries == null){
+                    Log.v(TAG,"NULL");
+                }
                 EditText desc = (EditText)findViewById(R.id.editText_description);
                 EditText name = (EditText)findViewById(R.id.editText_place);
                 mPlacebookEntry.setName(name.getText().toString());
                 mPlacebookEntry.appendDescription(desc.getText().toString());
+                mPlacebookEntry.setPhotoPath(mCurrentFilePath);
                 mPlacebookEntries.add(mPlacebookEntry);
                 entryId++;
+
+                desc.setText("");
+                name.setText("");
+                mCurrentFilePath="";
+                Log.v(TAG,"ENTRY: "+mPlacebookEntries);
                 return true;
             case R.id.action_view_all:
                 //Code to show all places
@@ -190,6 +202,7 @@ public class MainActivity extends ActionBarActivity {
                 //Code to show settings
                 return true;
             default:
+                Log.v(TAG,"Click Default");
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -237,7 +250,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentFilePath = image.getAbsolutePath();
-        mPlacebookEntry.setPhotoPath(image.getAbsolutePath());
+        //mPlacebookEntry.setPhotoPath(image.getAbsolutePath());
 
         return image;
     }
