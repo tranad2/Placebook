@@ -48,6 +48,8 @@ public class MainActivity extends ActionBarActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1001;
     private static final int REQUEST_SPEECH_INPUT = 1002;
     private static final int REQUEST_PLACE_PICKER = 1003;
+    private static final int FOCUS_PLACE = 2001;
+    private static final int FOCUS_DESC = 2002;
     private ArrayList<PlacebookEntry> mPlacebookEntries = new ArrayList<>();
     private PlacebookEntry mPlacebookEntry;
 
@@ -55,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
     private ListView mListView;
     private String mCurrentFilePath;
     private long entryId;
+    private int focus = FOCUS_PLACE;
 
     private static final int REQUEST_RESOLVE_ERROR = 1000;
     private static final String DIALOG_ERROR = "dialog_error";
@@ -78,6 +81,8 @@ public class MainActivity extends ActionBarActivity {
         ImageButton btnLocation = (ImageButton) findViewById(R.id.imageButton_location);
         ImageButton btnCamera = (ImageButton) findViewById(R.id.imageButton_camera);
         ImageButton btnMicrophone = (ImageButton) findViewById(R.id.imageButton_microphone);
+        EditText editPlace = (EditText) findViewById(R.id.editText_place);
+        EditText editDesc = (EditText) findViewById(R.id.editText_description);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -94,6 +99,18 @@ public class MainActivity extends ActionBarActivity {
         btnMicrophone.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dispatchSpeechInputIntent();
+            }
+        });
+
+        editPlace.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                focus = FOCUS_PLACE;
+            }
+        });
+
+        editDesc.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                focus = FOCUS_DESC;
             }
         });
 
@@ -131,7 +148,16 @@ public class MainActivity extends ActionBarActivity {
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             // Append result.get(0) to the place name or description text view
             // according to which one had focus when voice recognizer was launched
-            mPlacebookEntry.appendDescription(result.get(0));
+            //mPlacebookEntry.appendDescription(result.get(0));
+
+            if (focus == FOCUS_PLACE) {
+                EditText view = (EditText) findViewById(R.id.editText_place);
+                view.setText(result.get(0));
+            }
+            else if (focus == FOCUS_DESC) {
+                EditText view = (EditText) findViewById(R.id.editText_description);
+                view.setText(result.get(0));
+            }
 
         }
 
@@ -265,11 +291,19 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-//        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_prompt));
+        if (focus == FOCUS_PLACE) {
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_prompt_place));
+        }
+        else if (focus == FOCUS_DESC) {
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_prompt_desc));
+        }
         try {
             startActivityForResult(intent, REQUEST_SPEECH_INPUT);
         } catch (ActivityNotFoundException a) {
             // Handle Exception
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
             a.printStackTrace();
         }
     }

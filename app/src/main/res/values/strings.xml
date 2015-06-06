@@ -13,4 +13,7 @@
     <string name="textView_description">DESCRIPTION</string>
     <string name="editText_description">Enter a place description</string>
     <string name="textView_history">HISTORY</string>
+    <string name="speech_prompt_place">Say a place!</string>
+    <string name="speech_prompt_desc">Say a description!</string>
+    <string name="speech_not_supported">Speech not supported!</string>
 </resources>
