@@ -222,6 +222,7 @@ public class MainActivity extends ActionBarActivity implements ActionMode.Callba
 
                 desc.setText("");
                 name.setText("");
+                mCurrentFilePath=null;
                 return true;
             case R.id.action_view_all:
                 //Code to show all places

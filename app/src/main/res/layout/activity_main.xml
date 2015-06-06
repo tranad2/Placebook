@@ -104,7 +104,7 @@
         <ListView
             android:id="@+id/ListView_history"
             android:layout_width="300dp"
-            android:layout_height="250dp"
+            android:layout_height="240dp"
             android:scrollbars="vertical"
             android:fillViewport="true"
             android:background="#9ccdcdcd"
@@ -117,6 +117,15 @@
             android:smoothScrollbar="true"
             android:scrollingCache="true"
             android:choiceMode="singleChoice" />
+
+        <ImageButton
+            android:id="@+id/button_powered_by_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:alpha="255"
+            android:src="@drawable/powered_by_google_light" />
 
     </RelativeLayout>
 
